@@ -4,7 +4,6 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.confirmations.Confirmation;
-import com.palmergames.bukkit.towny.confirmations.ConfirmationTransaction;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.overclaimshield.OverclaimShield;
@@ -18,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ToggleOverclaimShieldCommand implements CommandExecutor {
     @Override
@@ -45,40 +45,58 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
 
         boolean isShieldEnabled = TownMetadataManager.hasOverclaimShield(town);
         if (!isShieldEnabled) {
-            enableOverclaimShield(player, town);
+            if (!enableOverclaimShield(player, town))
+                return false;
         } else {
-            disableOverclaimShield(player, town);
+            disableOverclaimShield(town);
         }
+
+        String newStatus = isShieldEnabled ? "disabled" : "enabled";
+        TownyMessaging.sendMsg(player, "Overclaim shield is now " + newStatus);
 
         return false;
     }
 
-    private void enableOverclaimShield(Player player, Town town) {
+    private boolean enableOverclaimShield(Player player, Town town) {
         double amountOwed = Utils.getAmountOwed(town);
         FileConfiguration config = OverclaimShield.instance.getConfig();
+        AtomicBoolean success = new AtomicBoolean(true);
 
         Confirmation
                 .runOnAccept(() -> {
-                    boolean currentValue = TownMetadataManager.hasOverclaimShield(town);
-
-                    TownMetadataManager.setOverclaimShield(town, !currentValue);
+                    TownMetadataManager.setOverclaimShield(town, true);
                     TownMetadataManager.setToggledShieldOnAt(town, Instant.now().getEpochSecond());
 
-                    String newStatus = currentValue ? "disabled" : "enabled";
-                    TownyMessaging.sendMsg(player, "Overclaim shield is now " + newStatus);
+                    double amountOwedOnAccept = Utils.getAmountOwed(town);
+                    if (amountOwed != amountOwedOnAccept) {
+                        TownyMessaging.sendErrorMsg(player, "Town size changed, could not enable overclaim shield");
+
+                        success.set(false);
+                        return;
+                    }
+
+                    if (town.getAccount().getHoldingBalance() < amountOwed) {
+                        TownyMessaging.sendErrorMsg(player, "Your town has insufficient funds to enable overclaim shield");
+
+                        success.set(false);
+                    } else {
+                        town.getAccount().withdraw(amountOwed, "Payment to enable overclaim shield");
+                    }
                 })
-                .setTitle("This will cost " + TownyEconomyHandler.getFormattedBalance(amountOwed) + " and will cost an additional " + TownyEconomyHandler.getFormattedBalance(config.getDouble("cost")) + " for every " + config.getInt("grouping_size") + " plots over the claim limit each Towny new day")
-                .setCost(new ConfirmationTransaction(() -> amountOwed, town.getAccount(), "Cost of enabling overclaim shield"))
+                .setTitle("This will cost " +
+                        TownyEconomyHandler.getFormattedBalance(amountOwed) +
+                        " and will cost an additional " +
+                        TownyEconomyHandler.getFormattedBalance(config.getDouble("cost")) +
+                        " for every " +
+                        config.getInt("grouping_size") +
+                        " plots over the claim limit each Towny new day")
                 .sendTo(player);
+
+        return success.get();
     }
 
-    private void disableOverclaimShield(Player player, Town town) {
-        boolean currentValue = TownMetadataManager.hasOverclaimShield(town);
-
-        TownMetadataManager.setOverclaimShield(town, !currentValue);
+    private void disableOverclaimShield(Town town) {
+        TownMetadataManager.setOverclaimShield(town, false);
         TownMetadataManager.setToggledShieldOnAt(town, null);
-
-        String newStatus = currentValue ? "disabled" : "enabled";
-        TownyMessaging.sendMsg(player, "Overclaim shield is now " + newStatus);
     }
 }

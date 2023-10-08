@@ -8,6 +8,9 @@ public class Utils {
         FileConfiguration config = OverclaimShield.instance.getConfig();
 
         int townBlocksOverLimit = town.getNumTownBlocks() - town.getMaxTownBlocks();
+        if (townBlocksOverLimit < 0)
+            return 0;
+
         int payableGroups = Math.round((float) townBlocksOverLimit / config.getInt("grouping_size"));
 
         return payableGroups * config.getDouble("cost");
