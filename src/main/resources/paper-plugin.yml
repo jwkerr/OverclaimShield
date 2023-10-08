@@ -1,0 +1,15 @@
+name: OverclaimShield
+version: '${project.version}'
+main: net.earthmc.overclaimshield.OverclaimShield
+api-version: '1.20'
+prefix: OverclaimShield
+dependencies:
+  - name: Towny
+    required: true
+authors: [Fruitloopins]
+description: Adds a payable upkeep option to protect town chunks over the limit from overclaim
+
+permissions:
+  overclaimshield.command.toggleoverclaimshield:
+    description: "Allows the player to toggle overclaim shield"
+    default: false
