@@ -18,7 +18,7 @@ public class NewDayListener implements Listener {
                 continue;
 
             Long toggledShieldOnAt = TownMetadataManager.getToggledShieldOnAt(town);
-            if (toggledShieldOnAt - Instant.now().getEpochSecond() > 86400)
+            if (Instant.now().getEpochSecond() - toggledShieldOnAt < 86400)
                 continue;
 
             if (!town.isOverClaimed())

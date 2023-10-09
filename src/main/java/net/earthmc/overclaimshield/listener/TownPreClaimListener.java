@@ -1,5 +1,6 @@
 package net.earthmc.overclaimshield.listener;
 
+import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
@@ -21,7 +22,7 @@ public class TownPreClaimListener implements Listener {
 
         if (TownMetadataManager.hasOverclaimShield(town)) {
             event.setCancelled(true);
-            event.setCancelMessage("Could not overclaim this plot as the town has purchased an overclaim shield");
+            TownyMessaging.sendErrorMsg(event.getPlayer(), "Could not overclaim this plot as the town has purchased an overclaim shield");
         }
     }
 }

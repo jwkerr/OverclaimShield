@@ -13,6 +13,9 @@ public class Utils {
 
         int payableGroups = Math.round((float) townBlocksOverLimit / config.getInt("grouping_size"));
 
+        if (payableGroups < 1)
+            payableGroups = 1;
+
         return payableGroups * config.getDouble("cost");
     }
 }

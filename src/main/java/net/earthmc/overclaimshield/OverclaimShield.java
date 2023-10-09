@@ -15,6 +15,7 @@ public final class OverclaimShield extends JavaPlugin {
         instance = this;
 
         Config.init(getConfig());
+        saveConfig();
 
         getServer().getPluginManager().registerEvents(new TownPreClaimListener(), this);
         getServer().getPluginManager().registerEvents(new NewDayListener(), this);
