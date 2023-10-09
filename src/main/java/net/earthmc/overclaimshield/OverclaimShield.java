@@ -5,6 +5,7 @@ import net.earthmc.overclaimshield.command.ToggleOverclaimShieldCommand;
 import net.earthmc.overclaimshield.config.Config;
 import net.earthmc.overclaimshield.listener.NewDayListener;
 import net.earthmc.overclaimshield.listener.TownPreClaimListener;
+import net.earthmc.overclaimshield.listener.TownStatusScreenListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class OverclaimShield extends JavaPlugin {
@@ -19,6 +20,7 @@ public final class OverclaimShield extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new TownPreClaimListener(), this);
         getServer().getPluginManager().registerEvents(new NewDayListener(), this);
+        getServer().getPluginManager().registerEvents(new TownStatusScreenListener(), this);
 
         TownyCommandAddonAPI.addSubCommand(TownyCommandAddonAPI.CommandType.TOWN_TOGGLE, "overclaimshield", new ToggleOverclaimShieldCommand());
 
