@@ -48,11 +48,8 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
             if (!enableOverclaimShield(player, town))
                 return false;
         } else {
-            disableOverclaimShield(town);
+            disableOverclaimShield(player, town);
         }
-
-        String newStatus = isShieldEnabled ? "disabled" : "enabled";
-        TownyMessaging.sendMsg(player, "Overclaim shield is now " + newStatus);
 
         return false;
     }
@@ -81,6 +78,8 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
                         success.set(false);
                     } else {
                         town.getAccount().withdraw(amountOwed, "Payment to enable overclaim shield");
+
+                        TownyMessaging.sendMsg(player, "Overclaim shield is now enabled");
                     }
                 })
                 .setTitle("This will cost " +
@@ -95,8 +94,10 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
         return success.get();
     }
 
-    private void disableOverclaimShield(Town town) {
+    private void disableOverclaimShield(Player player, Town town) {
         TownMetadataManager.setOverclaimShield(town, false);
         TownMetadataManager.setToggledShieldOnAt(town, null);
+
+        TownyMessaging.sendMsg(player, "Overclaim shield is now disabled");
     }
 }
