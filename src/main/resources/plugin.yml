@@ -8,6 +8,7 @@ dependencies:
     required: true
 authors: [Fruitloopins]
 description: Adds a payable upkeep option to protect town chunks over the limit from overclaim
+folia-supported: true
 
 permissions:
   overclaimshield.command.toggleoverclaimshield:
