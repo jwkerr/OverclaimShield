@@ -2,11 +2,14 @@ package net.earthmc.overclaimshield.manager;
 
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;
+import com.palmergames.bukkit.towny.object.metadata.IntegerDataField;
 import com.palmergames.bukkit.towny.object.metadata.LongDataField;
+import net.earthmc.overclaimshield.OverclaimShield;
 
 public class TownMetadataManager {
-    private static final String hasShield = "os_hasshield";
-    private static final String toggledShieldOnAt = "os_toggledshieldonat";
+    private static final String hasShield = "os_hasShield";
+    private static final String toggledShieldOnAt = "os_toggledShieldOnAt";
+    private static final String overclaimsRemainingToday = "os_overclaimsRemainingToday";
 
     public static Boolean hasOverclaimShield(Town town) {
         BooleanDataField bdf = (BooleanDataField) town.getMetadata(hasShield);
@@ -46,5 +49,28 @@ public class TownMetadataManager {
 
         ldf.setValue(value);
         town.addMetaData(ldf);
+    }
+
+    public static int getOverclaimsRemainingToday(Town town) {
+        IntegerDataField idf = (IntegerDataField) town.getMetadata(overclaimsRemainingToday);
+        if (idf == null) {
+            int configuredOverclaims = OverclaimShield.INSTANCE.getConfig().getInt("overclaims_per_day");
+            setOverclaimsRemainingToday(town, configuredOverclaims);
+            return configuredOverclaims;
+        }
+
+        return idf.getValue();
+    }
+
+    public static void setOverclaimsRemainingToday(Town town, int value) {
+        if (!town.hasMeta(overclaimsRemainingToday))
+            town.addMetaData(new IntegerDataField(overclaimsRemainingToday, null));
+
+        IntegerDataField idf = (IntegerDataField) town.getMetadata(overclaimsRemainingToday);
+        if (idf == null)
+            return;
+
+        idf.setValue(value);
+        town.addMetaData(idf);
     }
 }

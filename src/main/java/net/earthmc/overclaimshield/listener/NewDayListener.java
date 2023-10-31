@@ -3,6 +3,7 @@ package net.earthmc.overclaimshield.listener;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
 import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.overclaimshield.OverclaimShield;
 import net.earthmc.overclaimshield.Utils;
 import net.earthmc.overclaimshield.manager.TownMetadataManager;
 import org.bukkit.event.EventHandler;
@@ -14,6 +15,8 @@ public class NewDayListener implements Listener {
     @EventHandler
     public void onNewDay(NewDayEvent event) {
         for (Town town : TownyAPI.getInstance().getTowns()) {
+            TownMetadataManager.setOverclaimsRemainingToday(town, OverclaimShield.INSTANCE.getConfig().getInt("overclaims_per_day"));
+
             if (!TownMetadataManager.hasOverclaimShield(town))
                 continue;
 

@@ -3,7 +3,6 @@ package net.earthmc.overclaimshield.listener;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.event.TownPreClaimEvent;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownBlock;
 import net.earthmc.overclaimshield.manager.TownMetadataManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,15 +13,24 @@ public class TownPreClaimListener implements Listener {
         if (!event.isOverClaim())
             return;
 
-        TownBlock townBlock = event.getTownBlock();
-        Town town = townBlock.getTownOrNull();
+        Town overclaimingTown = event.getTown();
+        int overclaimsRemainingToday = TownMetadataManager.getOverclaimsRemainingToday(overclaimingTown);
+        if (overclaimsRemainingToday <= 0) {
+            event.setCancelled(true);
+            TownyMessaging.sendErrorMsg(event.getPlayer(), "Could not overclaim this plot as your town has no remaining overclaims today");
+            return;
+        }
 
-        if (town == null)
+        Town townGettingOverclaimed = event.getTownBlock().getTownOrNull();
+        if (townGettingOverclaimed == null)
             return;
 
-        if (TownMetadataManager.hasOverclaimShield(town)) {
+        if (TownMetadataManager.hasOverclaimShield(townGettingOverclaimed)) {
             event.setCancelled(true);
             TownyMessaging.sendErrorMsg(event.getPlayer(), "Could not overclaim this plot as the town has purchased an overclaim shield");
+            return;
         }
+
+        TownMetadataManager.setOverclaimsRemainingToday(overclaimingTown, overclaimsRemainingToday - 1);
     }
 }
