@@ -7,7 +7,7 @@ import com.palmergames.bukkit.towny.confirmations.Confirmation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import net.earthmc.overclaimshield.OverclaimShield;
-import net.earthmc.overclaimshield.Utils;
+import net.earthmc.overclaimshield.util.Util;
 import net.earthmc.overclaimshield.manager.TownMetadataManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,14 +20,14 @@ import java.time.Instant;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ToggleOverclaimShieldCommand implements CommandExecutor {
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             TownyMessaging.sendErrorMsg(sender, "Only players can use this command");
             return true;
         }
 
-        Player player = (Player) sender;
         Resident resident = TownyAPI.getInstance().getResident(player);
         if (resident == null)
             return true;
@@ -38,7 +38,7 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
             return true;
         }
 
-        if (!player.hasPermission("overclaimshield.command.toggleoverclaimshield")) {
+        if (!player.hasPermission("overclaimshield.command.toggle.overclaimshield")) {
             TownyMessaging.sendErrorMsg(player, "You do not have permission to buy an overclaim shield");
             return true;
         }
@@ -55,16 +55,13 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
     }
 
     private boolean enableOverclaimShield(Player player, Town town) {
-        double amountOwed = Utils.getAmountOwed(town);
+        double amountOwed = Util.getAmountOwed(town);
         FileConfiguration config = OverclaimShield.INSTANCE.getConfig();
         AtomicBoolean success = new AtomicBoolean(true);
 
         Confirmation
                 .runOnAccept(() -> {
-                    TownMetadataManager.setOverclaimShield(town, true);
-                    TownMetadataManager.setToggledShieldOnAt(town, Instant.now().getEpochSecond());
-
-                    double amountOwedOnAccept = Utils.getAmountOwed(town);
+                    double amountOwedOnAccept = Util.getAmountOwed(town);
                     if (amountOwed != amountOwedOnAccept) {
                         TownyMessaging.sendErrorMsg(player, "Town size changed, could not enable overclaim shield");
 
@@ -79,15 +76,14 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
                     } else {
                         town.getAccount().withdraw(amountOwed, "Payment to enable overclaim shield");
 
+                        TownMetadataManager.setOverclaimShield(town, true);
+                        TownMetadataManager.setToggledShieldOnAt(town, Instant.now().getEpochSecond());
+
                         TownyMessaging.sendMsg(player, "Overclaim shield is now enabled");
                     }
                 })
-                .setTitle("This will cost " +
-                        TownyEconomyHandler.getFormattedBalance(amountOwed) +
-                        " and will cost an additional " +
-                        TownyEconomyHandler.getFormattedBalance(config.getDouble("cost")) +
-                        " for every " +
-                        config.getInt("grouping_size") +
+                .setTitle("This will cost " + TownyEconomyHandler.getFormattedBalance(amountOwed) + " and will cost an additional " +
+                        TownyEconomyHandler.getFormattedBalance(config.getDouble("cost")) + " for every " + config.getInt("grouping_size") +
                         " plots over the claim limit each Towny new day")
                 .sendTo(player);
 

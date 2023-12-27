@@ -1,4 +1,4 @@
-Adds a `/t toggle overclaimshield` command that when ran will add a boolean metadata field to the town representing their overclaim shield status.
+Adds a `/t toggle overclaimshield` command that when ran will add a boolean metadata field to the town representing their overclaim shield status. Command permission is `overclaimshield.command.toggle.overclaimshield`
 
 When this command is run, the shield will be enabled or disabled depending on the previous state, if it is enabled there will be a confirmation explaining the cost that will be incurred for toggling it on and the subsequent costs at new days.
 

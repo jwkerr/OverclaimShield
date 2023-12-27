@@ -1,9 +1,11 @@
-package net.earthmc.overclaimshield;
+package net.earthmc.overclaimshield.util;
 
 import com.palmergames.bukkit.towny.object.Town;
+import net.earthmc.overclaimshield.OverclaimShield;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class Utils {
+public class Util {
+
     public static double getAmountOwed(Town town) {
         FileConfiguration config = OverclaimShield.INSTANCE.getConfig();
 

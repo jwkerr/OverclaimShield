@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class TownPreClaimListener implements Listener {
+
     @EventHandler
     public void onTownPreClaim(TownPreClaimEvent event) {
         if (!event.isOverClaim())

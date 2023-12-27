@@ -8,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class TownStatusScreenListener implements Listener {
+
     @EventHandler
     public void onTownStatusScreen(TownStatusScreenEvent event) {
         if (!TownMetadataManager.hasOverclaimShield(event.getTown()))

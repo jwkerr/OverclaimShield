@@ -11,6 +11,6 @@ description: Adds a payable upkeep option to protect town chunks over the limit 
 folia-supported: true
 
 permissions:
-  overclaimshield.command.toggleoverclaimshield:
-    description: "Allows the player to toggle overclaim shield"
+  overclaimshield.command.toggle.overclaimshield:
+    description: "Allows the player to toggle overclaim shield in their town"
     default: false
