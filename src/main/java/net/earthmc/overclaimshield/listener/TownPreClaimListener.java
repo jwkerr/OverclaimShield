@@ -29,9 +29,6 @@ public class TownPreClaimListener implements Listener {
         if (TownMetadataManager.hasOverclaimShield(townGettingOverclaimed)) {
             event.setCancelled(true);
             TownyMessaging.sendErrorMsg(event.getPlayer(), "Could not overclaim this plot as the town has purchased an overclaim shield");
-            return;
         }
-
-        TownMetadataManager.setOverclaimsRemainingToday(overclaimingTown, overclaimsRemainingToday - 1);
     }
 }
