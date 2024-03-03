@@ -7,7 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Util {
 
     public static double getAmountOwed(Town town) {
-        FileConfiguration config = OverclaimShield.INSTANCE.getConfig();
+        FileConfiguration config = OverclaimShield.instance.getConfig();
 
         int townBlocksOverLimit = town.getNumTownBlocks() - town.getMaxTownBlocks();
         if (townBlocksOverLimit < 0)

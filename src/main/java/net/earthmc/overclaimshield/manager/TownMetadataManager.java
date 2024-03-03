@@ -54,7 +54,7 @@ public class TownMetadataManager {
     public static int getOverclaimsRemainingToday(Town town) {
         IntegerDataField idf = (IntegerDataField) town.getMetadata(overclaimsRemainingToday);
         if (idf == null) {
-            int configuredOverclaims = OverclaimShield.INSTANCE.getConfig().getInt("overclaims_per_day");
+            int configuredOverclaims = OverclaimShield.instance.getConfig().getInt("overclaims_per_day");
             setOverclaimsRemainingToday(town, configuredOverclaims);
             return configuredOverclaims;
         }

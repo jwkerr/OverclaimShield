@@ -56,7 +56,7 @@ public class ToggleOverclaimShieldCommand implements CommandExecutor {
 
     private boolean enableOverclaimShield(Player player, Town town) {
         double amountOwed = Util.getAmountOwed(town);
-        FileConfiguration config = OverclaimShield.INSTANCE.getConfig();
+        FileConfiguration config = OverclaimShield.instance.getConfig();
         AtomicBoolean success = new AtomicBoolean(true);
 
         Confirmation

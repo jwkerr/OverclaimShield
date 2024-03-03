@@ -10,11 +10,11 @@ import net.earthmc.overclaimshield.listener.TownStatusScreenListener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class OverclaimShield extends JavaPlugin {
-    public static OverclaimShield INSTANCE;
+    public static OverclaimShield instance;
 
     @Override
     public void onEnable() {
-        INSTANCE = this;
+        instance = this;
 
         Config.init(getConfig());
         saveConfig();

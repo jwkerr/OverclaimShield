@@ -16,7 +16,7 @@ public class NewDayListener implements Listener {
     @EventHandler
     public void onNewDay(NewDayEvent event) {
         for (Town town : TownyAPI.getInstance().getTowns()) {
-            TownMetadataManager.setOverclaimsRemainingToday(town, OverclaimShield.INSTANCE.getConfig().getInt("overclaims_per_day"));
+            TownMetadataManager.setOverclaimsRemainingToday(town, OverclaimShield.instance.getConfig().getInt("overclaims_per_day"));
 
             if (!TownMetadataManager.hasOverclaimShield(town))
                 continue;
